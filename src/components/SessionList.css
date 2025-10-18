@@ -1,0 +1,16 @@
+.session-list {
+  /* This container can be simple as the cards handle their own margins */
+}
+
+.session-list-empty {
+  background-color: #f8f9fa;
+  border: 1px dashed #ced4da;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  color: #6c757d;
+}
+
+.session-list-empty h3 {
+  margin-top: 0;
+}
