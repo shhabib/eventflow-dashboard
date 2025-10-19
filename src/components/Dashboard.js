@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MetricsDisplay from "./MetricsDisplay";
 import AttendanceChart from "./AttendanceChart";
 import "./Dashboard.css";
 
 const Dashboard = ({ sessions }) => {
+  useEffect(() => {
+    // This simulates a memory leak. An interval is set, but never cleared.
+    // When the component unmounts, the interval will keep running in the background.
+    const intervalId = setInterval(() => {
+      console.log("Dashboard component is still ticking...");
+    }, 2000);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+      console.log("Dashboard timer cleaned up!");
+    };
+  }, []); // Empty dependency array ensures this runs only on mount and unmount
+
   console.log('%cDashboard Component Rendered', 'color: blue; font-weight: bold;');
 
   console.log('Calculating dashboard analytics...');
