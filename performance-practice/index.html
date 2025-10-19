@@ -8,6 +8,7 @@
   <body>
     <h1>Performance Measurement Practice</h1>
     <p>Open the developer console to see the results.</p>
+
     <script>
       // --- Data and Function to be Measured ---
 
@@ -41,29 +42,21 @@
         return null; // Not found
       }
 
-      // --- Call the function ---
+      // --- Call the function and measure its performance ---
 
-      // Performance measurement wrapper
       const startTime = performance.now();
-      // Change from 'value_40050' to 'value_49950'
-      // This value doesn't exist - worst case scenario
-      const foundItem = findItemInefficiently(data, 50, "value_99999");
+
+      const foundItem = findItemInefficiently(data, 50, "value_40050");
+
       const endTime = performance.now();
       const duration = endTime - startTime;
 
-      // Results
       console.log("Found Item:", foundItem);
       console.log(
         `The findItemInefficiently function took ${duration.toFixed(
           2
         )} ms to execute.`
       );
-
-      // Performance findings:
-      // - value_40050: ~3ms (early in filtered array)
-      // - value_49950: ~15ms (late in filtered array)
-      // - value_99999: ~20ms (not found - worst case)
-      // Conclusion: Performance depends on data position
     </script>
   </body>
 </html>
