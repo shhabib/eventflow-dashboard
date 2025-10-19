@@ -5,6 +5,7 @@ import SessionList from "./components/SessionList";
 import Dashboard from "./components/Dashboard";
 
 function App() {
+  console.log('%cApp Component Rendered', 'color: green; font-weight: bold;');
   // State initialization based on DATA_FLOW.md
   const [sessions, setSessions] = useState(eventData.sessions); // Correctly initializing with the sessions array
   const [view, setView] = useState("list"); // 'list' or 'dashboard'
@@ -15,9 +16,29 @@ function App() {
   });
   const [announcement, setAnnouncement] = useState('');
 
+  // PERFORMANCE BASELINE: View switching triggers filtering
+  // Current behavior: filteredSessions recalculates on every render
+  // Impact: ~100 sessions filtered unnecessarily on view change
+
+  /**
+   * PERFORMANCE AUDIT FINDING:
+   * This filtering logic is re-calculated on every single render of the App component.
+   * This is inefficient because it runs even when the `sessions` or `filters` state
+   * have not changed, for example, when only the `view` state changes.
+   *
+   * GOAL FOR NEXT LAB:
+   * Refactor this to use a memoization hook (useMemo) so it only re-calculates
+   * when `sessions` or `filters` actually change.
+   */
+
   // useMemo will only recalculate when `sessions` or `filters` change.
   const filteredSessions = useMemo(() => {
-    return sessions.filter((session) => {
+    console.log('Filtering sessions...');
+
+    // Start timing
+    const filterStartTime = performance.now();
+
+    const result = sessions.filter((session) => {
       const searchTermMatch = session.title
         .toLowerCase()
         .includes(filters.searchTerm.toLowerCase());
@@ -27,6 +48,12 @@ function App() {
 
       return searchTermMatch && speakerMatch;
     });
+
+    // End timing
+    const filterEndTime = performance.now();
+    console.log(`-> Session filtering took: ${(filterEndTime - filterStartTime).toFixed(2)} ms`);
+
+    return result;
   }, [sessions, filters]);
 
   const handleFilterChange = (event) => {
