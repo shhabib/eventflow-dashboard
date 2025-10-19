@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Performance Measurement Practice</title>
+  </head>
+  <body>
+    <h1>Performance Measurement Practice</h1>
+    <p>Open the developer console to see the results.</p>
+    <script>
+      // --- Data and Function to be Measured ---
+
+      // A large array of data objects to simulate a real-world dataset.
+      const data = [];
+      for (let i = 0; i < 50000; i++) {
+        data.push({ id: i, value: `value_${i}`, category: i % 100 });
+      }
+
+      /**
+       * An intentionally inefficient function that finds all items matching a category
+       * and then searches for a specific value within that category.
+       * @param {Array<Object>} dataSet - The array of data to search through.
+       * @param {number} targetCategory - The category to filter by.
+       * @param {string} targetValue - The specific value to find.
+       * @returns {Object|null} The found item or null.
+       */
+      function findItemInefficiently(dataSet, targetCategory, targetValue) {
+        // First, filter by category
+        const itemsInCategory = dataSet.filter(
+          (item) => item.category === targetCategory
+        );
+
+        // Then, find the specific item in the filtered results
+        for (let i = 0; i < itemsInCategory.length; i++) {
+          if (itemsInCategory[i].value === targetValue) {
+            return itemsInCategory[i]; // Found it!
+          }
+        }
+
+        return null; // Not found
+      }
+
+      // --- Call the function ---
+
+      // Performance measurement wrapper
+      const startTime = performance.now();
+      // Change from 'value_40050' to 'value_49950'
+      // This value doesn't exist - worst case scenario
+      const foundItem = findItemInefficiently(data, 50, "value_99999");
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+
+      // Results
+      console.log("Found Item:", foundItem);
+      console.log(
+        `The findItemInefficiently function took ${duration.toFixed(
+          2
+        )} ms to execute.`
+      );
+
+      // Performance findings:
+      // - value_40050: ~3ms (early in filtered array)
+      // - value_49950: ~15ms (late in filtered array)
+      // - value_99999: ~20ms (not found - worst case)
+      // Conclusion: Performance depends on data position
+    </script>
+  </body>
+</html>
