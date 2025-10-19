@@ -5,16 +5,17 @@ import "./Dashboard.css";
 
 const Dashboard = ({ sessions }) => {
   useEffect(() => {
-    // This simulates a memory leak. An interval is set, but never cleared.
-    // When the component unmounts, the interval will keep running in the background.
+    console.log('Dashboard component has mounted');
+  
+    // Store the interval ID so we can clear it later
     const intervalId = setInterval(() => {
-      console.log("Dashboard component is still ticking...");
-    }, 2000);
-
-    // Cleanup function to clear the interval when the component unmounts
+      console.log('Dashboard is active...');
+    }, 3000);
+  
+    // Return a cleanup function that React will call on unmount
     return () => {
       clearInterval(intervalId);
-      console.log("Dashboard timer cleaned up!");
+      console.log("Cleaning up the dashboard interval.");
     };
   }, []); // Empty dependency array ensures this runs only on mount and unmount
 
